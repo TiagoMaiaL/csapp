@@ -6,6 +6,7 @@ unsigned replace_byte(unsigned x, int i, unsigned char b);
 bool int_shifts_are_arithmetic();
 unsigned srl(unsigned x, int k);
 int sra(int x, int k);
+int any_odd_one(unsigned x);
 
 int main()
 {
@@ -45,6 +46,10 @@ int main()
     unsigned int j = 0xF0F1D2C3;
     printf("2.63: before shift = %x, after srl = %x, native srl = %x\n", j, srl(j, 8), j >> 8);
     printf("2.63: before shift = %x, after sra = %x, native sra = %x\n", j, sra(j, 8), (int) j >> 8);
+
+    // 2.64
+    printf("2.64: any odd one of 0xAAAAAAAA = %d\n", any_odd_one(0xAAAAAAAA));
+    printf("2.64: any odd one of 0x50450010 = %d\n", any_odd_one(0x50450010));
 
     return 0;
 }
@@ -115,5 +120,11 @@ int sra(int x, int k)
     mask = mask << (w - k);
 
     return mask + result;
+}
+
+int any_odd_one(unsigned x)
+{
+    unsigned mask = 0x55555555;
+    return ((unsigned) (x & mask)) != 0;
 }
 
