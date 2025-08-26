@@ -42,7 +42,9 @@ int main()
     printf("2.62: uses arithmetic? %d\n", int_shifts_are_arithmetic());
 
     // 2.63
-
+    unsigned int j = 0xF0F1D2C3;
+    printf("2.63: before shift = %x, after srl = %x, native srl = %x\n", j, srl(j, 8), j >> 8);
+    printf("2.63: before shift = %x, after sra = %x, native sra = %x\n", j, sra(j, 8), (int) j >> 8);
 
     return 0;
 }
@@ -74,11 +76,44 @@ bool int_shifts_are_arithmetic()
 
 unsigned srl(unsigned x, int k)
 {
+    if (k == 0)
+        return x;
 
+    size_t w;
+    int result;
+    unsigned mask;
+
+    w = sizeof(int) << 3;
+    result = (int) x >> k;
+    
+    mask = 1;
+    for (int j = 0; j < (w - k - 1); j++) {
+        mask = mask << 1;
+        mask++;
+    }
+
+    return mask & result;
 }
 
 int sra(int x, int k)
 {
+    if (k == 0)
+        return x;
 
+    size_t w;
+    int result;
+    unsigned mask;
+
+    w = sizeof(int) << 3;
+    result = (unsigned) x >> k;
+
+    mask = 1;
+    for (int j = 0; j < k - 1; j++) {
+        mask = mask << 1;
+        mask++;
+    }
+    mask = mask << (w - k);
+
+    return mask + result;
 }
 
