@@ -3,6 +3,9 @@
 #include <stdio.h>
 
 unsigned replace_byte(unsigned x, int i, unsigned char b);
+bool int_shifts_are_arithmetic();
+unsigned srl(unsigned x, int k);
+int sra(int x, int k);
 
 int main()
 {
@@ -21,6 +24,26 @@ int main()
     replace_byte(0x12345678, 2, 0xAB);
     replace_byte(0x12345678, 3, 0xAB);
 
+    // 2.61
+    printf("2.61 a: 0x72 -> %x\n", 0x72 != 0);
+    printf("2.61 a: 0x00 -> %x\n", 0x00 != 0);
+
+    printf("2.61 b: 0xFFFFFFFF -> %x\n", 0xFFFFFFFF != -1);
+    printf("2.61 b: 0x00 -> %x\n", 0x00 != -1);
+    printf("2.61 b: 0xCADF14EE -> %x\n", 0xCADF14EE != -1);
+
+    printf("2.61 c: 0xFEDD0174 -> %x\n", (0xFEDD0174 & 0x000000FF) != 0x00);
+    printf("2.61 c: 0xFEDD0100 -> %x\n", (0xFEDD0100 & 0x000000FF) != 0x00);
+
+    printf("2.61 d: 0xFEDD0174 -> %x\n", (0xFEDD0174 >> ((sizeof(int) - 1) << 3)) != 0xFF);
+    printf("2.61 d: 0xFFDD0174 -> %x\n", (0xFFDD0174 >> ((sizeof(int) - 1) << 3)) != 0xFF);
+
+    // 2.62
+    printf("2.62: uses arithmetic? %d\n", int_shifts_are_arithmetic());
+
+    // 2.63
+
+
     return 0;
 }
 
@@ -36,5 +59,26 @@ unsigned replace_byte(unsigned x, int i, unsigned char b)
     printf("%x\n", result);
 
     return result;
+}
+
+bool int_shifts_are_arithmetic()
+{
+    // Obs: after researching, here's a simpler way:
+    // return (-1 >> 1) == -1;
+
+    size_t w = (sizeof(int) << 3);
+    short shift = w - 1;
+
+    return (((0x01 << shift) >> (w - 4)) & 0xFF) == 0xF8;
+}
+
+unsigned srl(unsigned x, int k)
+{
+
+}
+
+int sra(int x, int k)
+{
+
 }
 
