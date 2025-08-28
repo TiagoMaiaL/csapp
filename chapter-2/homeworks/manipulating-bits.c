@@ -7,6 +7,7 @@ bool int_shifts_are_arithmetic();
 unsigned srl(unsigned x, int k);
 int sra(int x, int k);
 int any_odd_one(unsigned x);
+int odd_ones(unsigned x);
 
 int main()
 {
@@ -50,6 +51,10 @@ int main()
     // 2.64
     printf("2.64: any odd one of 0xAAAAAAAA = %d\n", any_odd_one(0xAAAAAAAA));
     printf("2.64: any odd one of 0x50450010 = %d\n", any_odd_one(0x50450010));
+
+    // 2.65
+    printf("2.65: odd ones of 0xAF12AF12 = %x\n", (unsigned) odd_ones(0xAF12AF12));
+    printf("2.65: odd ones of 0xAF2431FF = %x\n", (unsigned) odd_ones(0xAF2431FF));
 
     return 0;
 }
@@ -128,3 +133,13 @@ int any_odd_one(unsigned x)
     return ((unsigned) (x & mask)) != 0;
 }
 
+int odd_ones(unsigned x)
+{
+    x = x ^ (x >> 16);
+    x = x ^ (x >> 8);
+    x = x ^ (x >> 4);
+    x = x ^ (x >> 2);
+    x = x ^ (x >> 1);
+    x = x & 0x1;
+    return x;
+}
