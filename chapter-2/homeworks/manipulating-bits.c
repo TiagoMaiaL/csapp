@@ -8,6 +8,7 @@ unsigned srl(unsigned x, int k);
 int sra(int x, int k);
 int any_odd_one(unsigned x);
 int odd_ones(unsigned x);
+int leftmost_one(unsigned x);
 
 int main()
 {
@@ -55,6 +56,11 @@ int main()
     // 2.65
     printf("2.65: odd ones of 0xAF12AF12 = %x\n", (unsigned) odd_ones(0xAF12AF12));
     printf("2.65: odd ones of 0xAF2431FF = %x\n", (unsigned) odd_ones(0xAF2431FF));
+
+    // 2.66
+    printf("2.66: leftmost_one of 0x08000011 = %x\n", (unsigned) leftmost_one(0x08000011));
+    printf("2.66: leftmost_one of 0x0003AFD5 = %x\n", (unsigned) leftmost_one(0x0003AFD5));
+    printf("2.66: leftmost_one of 0x00007A11 = %x\n", (unsigned) leftmost_one(0x00007A11));
 
     return 0;
 }
@@ -143,3 +149,17 @@ int odd_ones(unsigned x)
     x = x & 0x1;
     return x;
 }
+
+int leftmost_one(unsigned x)
+{
+    x = x | x >> 1;
+    x = x | x >> 2;
+    x = x | x >> 4;
+    x = x | x >> 8;
+    x = x | x >> 16;
+    x = x + 1;
+    x = x >> 1;
+    
+    return x;
+}
+
