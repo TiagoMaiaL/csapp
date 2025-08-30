@@ -9,6 +9,8 @@ int sra(int x, int k);
 int any_odd_one(unsigned x);
 int odd_ones(unsigned x);
 int leftmost_one(unsigned x);
+int int_size_is_32();
+int lower_one_mask(int n);
 
 int main()
 {
@@ -61,6 +63,15 @@ int main()
     printf("2.66: leftmost_one of 0x08000011 = %x\n", (unsigned) leftmost_one(0x08000011));
     printf("2.66: leftmost_one of 0x0003AFD5 = %x\n", (unsigned) leftmost_one(0x0003AFD5));
     printf("2.66: leftmost_one of 0x00007A11 = %x\n", (unsigned) leftmost_one(0x00007A11));
+
+    // 2.67
+    printf("2.67 a: shifting to an amount greater than the type size is undefined behavior.\n");
+    printf("2.67 b, c: int size is 32? %d\n", (unsigned) int_size_is_32());
+
+    // 2.68
+    printf("2.68: lower_one_mask(6) = %x\n", lower_one_mask(6));
+    printf("2.68: lower_one_mask(17) = %x\n", lower_one_mask(17));
+    printf("2.68: lower_one_mask(30) = %x\n", lower_one_mask(30));
 
     return 0;
 }
@@ -159,7 +170,40 @@ int leftmost_one(unsigned x)
     x = x | x >> 16;
     x = x + 1;
     x = x >> 1;
-    
+
+    return x;
+}
+
+int int_size_is_32()
+{
+    unsigned int x;
+
+    x = (unsigned int) 0x8000000000000000U;
+
+    if (x != 0) {
+        return 0;
+    }
+
+    x = 0x80000000U;
+
+    if (x != 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int lower_one_mask(int n)
+{
+    unsigned x;
+    short w = sizeof(int) << 3;
+
+    if (n < 1 | n > w)
+        return 0;
+
+    x = (unsigned) -1;
+    x = x >> (w - n);
+
     return x;
 }
 
