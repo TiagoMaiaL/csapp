@@ -11,6 +11,7 @@ int odd_ones(unsigned x);
 int leftmost_one(unsigned x);
 int int_size_is_32();
 int lower_one_mask(int n);
+unsigned rotate_left(unsigned x, int n);
 
 int main()
 {
@@ -72,6 +73,10 @@ int main()
     printf("2.68: lower_one_mask(6) = %x\n", lower_one_mask(6));
     printf("2.68: lower_one_mask(17) = %x\n", lower_one_mask(17));
     printf("2.68: lower_one_mask(30) = %x\n", lower_one_mask(30));
+
+    // 2.69
+    printf("2.69: rotate_left 0x12345678 by 4  (should be 0x23456781) = %x\n", rotate_left(0x12345678, 4));
+    printf("2.69: rotate_left 0x12345678 by 20 (should be 0x67812345) = %x\n", rotate_left(0x12345678, 20));
 
     return 0;
 }
@@ -203,6 +208,23 @@ int lower_one_mask(int n)
 
     x = (unsigned) -1;
     x = x >> (w - n);
+
+    return x;
+}
+
+unsigned rotate_left(unsigned x, int n)
+{
+    int w = sizeof(int) << 3;
+
+    unsigned mask = (unsigned) -1;
+    mask = mask >> n;
+    mask = ~mask;
+
+    unsigned right_bits = x & mask;
+    right_bits = right_bits >> (w - n);
+
+    x = x << n;
+    x = x + right_bits;
 
     return x;
 }
