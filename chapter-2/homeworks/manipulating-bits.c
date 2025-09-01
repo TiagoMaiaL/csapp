@@ -12,6 +12,7 @@ int leftmost_one(unsigned x);
 int int_size_is_32();
 int lower_one_mask(int n);
 unsigned rotate_left(unsigned x, int n);
+int fits_bits(int x, int n);
 
 int main()
 {
@@ -77,6 +78,12 @@ int main()
     // 2.69
     printf("2.69: rotate_left 0x12345678 by 4  (should be 0x23456781) = %x\n", rotate_left(0x12345678, 4));
     printf("2.69: rotate_left 0x12345678 by 20 (should be 0x67812345) = %x\n", rotate_left(0x12345678, 20));
+
+    // 2.70
+    printf("2.70: fits_bits(0x00004567, 16) ? %d\n", fits_bits(0x00004567, 16));
+    printf("2.70: fits_bits(0x00008567, 16) ? %d\n", fits_bits(0x00008567, 16));
+    printf("2.70: fits_bits(0xFFFF4567, 20) ? %d\n", fits_bits(0xFFFF4567, 20));
+    printf("2.70: fits_bits(0xFFF80007, 20) ? %d\n", fits_bits(0xFFF80007, 20));
 
     return 0;
 }
@@ -203,7 +210,7 @@ int lower_one_mask(int n)
     unsigned x;
     short w = sizeof(int) << 3;
 
-    if (n < 1 | n > w)
+    if (n < 1 || n > w)
         return 0;
 
     x = (unsigned) -1;
@@ -227,5 +234,25 @@ unsigned rotate_left(unsigned x, int n)
     x = x + right_bits;
 
     return x;
+}
+
+int fits_bits(int x, int n)
+{
+    short w = sizeof(int) << 3;
+
+    int max = -1;
+    max = (unsigned) max >> 1;
+    max = (unsigned) max >> (w - n);
+
+    int min = (n == w) ? (max + 1) : -(1 << (n - 1));
+
+    if (n < 1 || n > w)
+        return 0;
+
+    if (x <= max && x >= min) {
+        return 1;
+    }
+
+    return 0;
 }
 
