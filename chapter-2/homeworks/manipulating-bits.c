@@ -14,6 +14,9 @@ int lower_one_mask(int n);
 unsigned rotate_left(unsigned x, int n);
 int fits_bits(int x, int n);
 
+typedef unsigned packed_t;
+int xbyte(packed_t word, int bytenum);
+
 int main()
 {
     // 2.59
@@ -84,6 +87,12 @@ int main()
     printf("2.70: fits_bits(0x00008567, 16) ? %d\n", fits_bits(0x00008567, 16));
     printf("2.70: fits_bits(0xFFFF4567, 20) ? %d\n", fits_bits(0xFFFF4567, 20));
     printf("2.70: fits_bits(0xFFF80007, 20) ? %d\n", fits_bits(0xFFF80007, 20));
+
+    // 2.71
+    printf("2.71: xbyte(0xDDCCBB7A, 0) == %x\n", xbyte(0xDDCCBB7A, 0));
+    printf("2.71: xbyte(0xDDCCABAA, 1) == %x\n", xbyte(0xDDCCABAA, 1));
+    printf("2.71: xbyte(0xDDCCBBAA, 2) == %x\n", xbyte(0xDDCCBBAA, 2));
+    printf("2.71: xbyte(0x3FCCBBAA, 3) == %x\n", xbyte(0x3FCCBBAA, 3));
 
     return 0;
 }
@@ -249,10 +258,15 @@ int fits_bits(int x, int n)
     if (n < 1 || n > w)
         return 0;
 
-    if (x <= max && x >= min) {
+    if (x <= max && x >= min)
         return 1;
-    }
 
     return 0;
+}
+
+#define MAX_BYTE 3
+int xbyte(packed_t word, int bytenum)
+{
+    return ((int)(word << ((MAX_BYTE - bytenum) << 3))) >> (MAX_BYTE << 3);
 }
 
