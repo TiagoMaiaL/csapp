@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 unsigned replace_byte(unsigned x, int i, unsigned char b);
 bool int_shifts_are_arithmetic();
@@ -13,6 +15,7 @@ int int_size_is_32();
 int lower_one_mask(int n);
 unsigned rotate_left(unsigned x, int n);
 int fits_bits(int x, int n);
+void copy_int(int val, void *buf, int maxbytes);
 
 typedef unsigned packed_t;
 int xbyte(packed_t word, int bytenum);
@@ -93,6 +96,20 @@ int main()
     printf("2.71: xbyte(0xDDCCABAA, 1) == %x\n", xbyte(0xDDCCABAA, 1));
     printf("2.71: xbyte(0xDDCCBBAA, 2) == %x\n", xbyte(0xDDCCBBAA, 2));
     printf("2.71: xbyte(0x3FCCBBAA, 3) == %x\n", xbyte(0x3FCCBBAA, 3));
+
+    // 2.72
+    int a = 0x87654321;
+    int b = 0xFEDCBA98;
+    void *buf = malloc(sizeof(int) * 2);
+
+    copy_int(a, buf, 8);
+    printf("2.72: copy_int result for a = %x\n", (int)((int *)buf)[0]);
+    copy_int(b, (void *)((int *)buf + 1), 4);
+    printf("2.72: copy_int result for b = %x\n", (int)((int *)buf)[1]);
+
+    free(buf);
+
+
 
     return 0;
 }
@@ -268,5 +285,14 @@ int fits_bits(int x, int n)
 int xbyte(packed_t word, int bytenum)
 {
     return ((int)(word << ((MAX_BYTE - bytenum) << 3))) >> (MAX_BYTE << 3);
+}
+
+void copy_int(int val, void *buf, int maxbytes)
+{
+    if (maxbytes <= 0)
+        return;
+
+    if ((size_t)maxbytes >= sizeof(val))
+        memcpy(buf, (void *)&val, sizeof(val));
 }
 
