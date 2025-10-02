@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +20,8 @@ void copy_int(int val, void *buf, int maxbytes);
 
 typedef unsigned packed_t;
 int xbyte(packed_t word, int bytenum);
+
+int saturating_add(int x, int y);
 
 int main()
 {
@@ -109,7 +112,10 @@ int main()
 
     free(buf);
 
-
+    // 2.73
+    printf("2.73: saturating_add(tmax, 10) = %x\n", saturating_add(INT_MAX, 10));
+    printf("2.73: saturating_add(tmin, -10) = %x\n", saturating_add(INT_MIN, -10));
+    printf("2.73: saturating_add(101, 23) = %x\n", saturating_add(101, 23));
 
     return 0;
 }
@@ -294,5 +300,17 @@ void copy_int(int val, void *buf, int maxbytes)
 
     if ((size_t)maxbytes >= sizeof(val))
         memcpy(buf, (void *)&val, sizeof(val));
+}
+
+int saturating_add(int x, int y)
+{
+    bool can_overflow_pos = x > 0 && y > 0;
+    bool can_overflow_neg = x < 0 && y < 0;
+    int result = x + y;
+
+    ((can_overflow_pos && result < 0) && (result = INT_MAX)) || 
+    ((can_overflow_neg && result > 0) && (result = INT_MIN));
+
+    return result;
 }
 
