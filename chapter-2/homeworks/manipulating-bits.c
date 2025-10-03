@@ -22,6 +22,7 @@ typedef unsigned packed_t;
 int xbyte(packed_t word, int bytenum);
 
 int saturating_add(int x, int y);
+int tsub_ok(int x, int y);
 
 int main()
 {
@@ -116,6 +117,11 @@ int main()
     printf("2.73: saturating_add(tmax, 10) = %x\n", saturating_add(INT_MAX, 10));
     printf("2.73: saturating_add(tmin, -10) = %x\n", saturating_add(INT_MIN, -10));
     printf("2.73: saturating_add(101, 23) = %x\n", saturating_add(101, 23));
+
+    // 2.74
+    printf("2.74: tsub_ok(10, 10) = %x\n", tsub_ok(10, 10));
+    printf("2.74: tsub_ok(TMIN, 1) = %x\n", tsub_ok(INT_MIN, 1));
+    printf("2.74: tsub_ok(2, -8) = %x\n", tsub_ok(2, -8));
 
     return 0;
 }
@@ -314,3 +320,9 @@ int saturating_add(int x, int y)
     return result;
 }
 
+int tsub_ok(int x, int y)
+{
+    int res = 1;
+    (x < 0) && ((x - y) > 0) && (res = 0);
+    return res;
+}
